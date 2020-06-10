@@ -8,7 +8,7 @@ class Ingredient:
         return cls.cost
 
 class Pizza(Ingredient):
-    cost = 23.00
+    cost = 10.00
 
 class Decorator(Ingredient):
     def __init__(self, ingredient):
@@ -71,4 +71,4 @@ class Chicken(Decorator):
 four_cheese = Gorgonzola(Parmesan(Provolone(Mozzarella(Pizza()))))
 
 print(four_cheese.getDescription())
-print(four_cheese.getTotalCost())
+print(f'Cost: $ {four_cheese.getTotalCost():.2f}')
