@@ -7,7 +7,7 @@ class History:
         self.__list = deque()
 
     def __str__(self):
-        return '\n'.join(str(i) + str(item) for (i,item) in enumerate(self.__list))
+        return '\n'.join(f'{i+1}: {item}' for (i,item) in enumerate(self.__list))
 
     def add(self,item):
         self.__list.appendleft(item)
@@ -19,7 +19,7 @@ class ClientBackend:
 
     @property
     def history(self):
-        return self.__history
+        return str(self.__history)
 
     def execute(self, command):
         self.__history.add(command)
@@ -76,8 +76,8 @@ class ClientUI:
         self.__main.title('Banco CES-22')
         self.__frame = tk.Frame(self.__main, height=500, width=100)
 
-        labels = ['Consultar Saldo', 'Consultar Extrato', 'Realizar Transferência']
-        funcs = [self.saldo, self.extrato, self.transferencia]
+        labels = ['Consultar Saldo', 'Consultar Extrato', 'Realizar Transferência','Histórico']
+        funcs = [self.saldo, self.extrato, self.transferencia, self.history]
 
         self.__buttons = []
         for i in range(len(labels)):
@@ -128,6 +128,22 @@ class ClientUI:
         self.__aux = []
         text = tk.Text(self.__frame, height=1)
         text.insert(tk.INSERT, self.__client.execute(Transferencia(self.__server)))
+        text.configure(state='disabled')
+
+        button = tk.Button(self.__frame, text='Voltar', command=self.back)
+        self.__aux.append(button)
+        self.__aux.append(text)
+
+        text.pack()
+        button.pack()
+
+    def history(self):
+        for button in self.__buttons:
+            button.pack_forget()
+
+        self.__aux = []
+        text = tk.Text(self.__frame, height=7)
+        text.insert(tk.INSERT, self.__client.history)
         text.configure(state='disabled')
 
         button = tk.Button(self.__frame, text='Voltar', command=self.back)
